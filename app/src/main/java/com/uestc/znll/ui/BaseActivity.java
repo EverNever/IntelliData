@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.uestc.znll.R;
 import com.uestc.znll.util.ImmerseStatusBar;
 
 /**
@@ -18,7 +19,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
-        ImmerseStatusBar.init(this);//4.4沉浸式状态栏
         setContentView(setRootView());
         initLayout();
         initValue();
