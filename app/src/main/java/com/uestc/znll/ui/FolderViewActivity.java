@@ -1,6 +1,9 @@
 package com.uestc.znll.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -26,7 +29,7 @@ public class FolderViewActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.folderview);
+        setContentView(R.layout.activity_folderview);
         initLayout();
         initValue();
         initListener();
@@ -40,20 +43,25 @@ public class FolderViewActivity extends BaseActivity
 
     @Override
     protected void initValue() {
-        SimpleAdapter adapter = new SimpleAdapter(this,getData(),R.layout.folderview_list_item,
-                new String[]{"month","detail"},
-                new int[]{R.id.folderview_listviewitem_textview_month,R.id.folderview_listviewitem_textview_detail});
+        FolderViewListViewAdapter adapter = new FolderViewListViewAdapter(this,getData());
         listview.setAdapter(adapter);
     }
 
     @Override
     protected void initListener() {
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(FolderViewActivity.this,DatadetailActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
     @Override
     protected int setRootView() {
-        return R.layout.folderview;
+        return R.layout.activity_folderview;
     }
 
     private List<Map<String,Object>> getData()
