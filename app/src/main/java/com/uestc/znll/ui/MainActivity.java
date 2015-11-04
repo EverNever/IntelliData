@@ -1,6 +1,9 @@
 package com.uestc.znll.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -17,28 +20,27 @@ public class MainActivity extends BaseActivity {
 
     //xml文件中定义的控件
     private ListView listView;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        findWidgets();
-        setMainListView();
-    }
+    private ImageButton imageButtonToFolderView;
 
     @Override
     protected void initLayout() {
-
+        findWidgets();
     }
 
     @Override
     protected void initValue() {
-
+        setMainListView();
     }
 
     @Override
     protected void initListener() {
-
+        imageButtonToFolderView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,FolderViewActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -48,6 +50,7 @@ public class MainActivity extends BaseActivity {
 
     private void findWidgets(){
         listView = (ListView)findViewById(R.id.Main_List);
+        imageButtonToFolderView = (ImageButton)findViewById(R.id.main_imagebutton_tofolderview);
     }
     private void setMainListView()
     {
