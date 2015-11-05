@@ -1,20 +1,17 @@
 package com.uestc.znll.ui;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
 import com.uestc.znll.R;
+import com.uestc.znll.util.AlarmUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class MainActivity extends BaseActivity {
 
@@ -29,6 +26,8 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initValue() {
+        //启动定时获取流量的任务
+        AlarmUtil.startAlarmTask(context);
         setMainListView();
     }
 
