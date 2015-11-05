@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="addpacket_dialog_spinner_entries">
+        <item>G</item>
+        <item>M</item>
+    </string-array>
+</resources>

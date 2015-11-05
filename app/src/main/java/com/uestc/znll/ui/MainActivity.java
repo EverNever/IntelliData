@@ -18,6 +18,7 @@ public class MainActivity extends BaseActivity {
     //xml文件中定义的控件
     private ListView listView;
     private ImageButton imageButtonToFolderView;
+    private ImageButton imageButtonEdit;
 
     @Override
     protected void initLayout() {
@@ -40,6 +41,13 @@ public class MainActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
+        imageButtonEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainEditDialog dialog = new MainEditDialog(MainActivity.this);
+                dialog.show();
+            }
+        });
 
     }
 
@@ -51,6 +59,7 @@ public class MainActivity extends BaseActivity {
     private void findWidgets(){
         listView = (ListView)findViewById(R.id.Main_List);
         imageButtonToFolderView = (ImageButton)findViewById(R.id.main_imagebutton_tofolderview);
+        imageButtonEdit = (ImageButton)findViewById(R.id.Main_button_edit);
     }
     private void setMainListView()
     {
