@@ -5,35 +5,50 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.TrafficStats;
 
+import com.uestc.znll.SQLConnection.DataPakBean;
+import com.uestc.znll.SQLConnection.SQLConnection;
+
+import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by chao on 2015/11/4.
  */
 public class DataReceiver extends BroadcastReceiver {
-
-    private TrafficHandler trafficHandler;
-
-    public DataReceiver() {
-        super();
-        //TODO trafficHandler的构造
-//        trafficHandler = new DBAdapter();
-    }
+    private SQLConnection connection;
+    private Context context;
+    private long lastBytes = 0;//上次的receiver到从开机到现在的流量
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        if(connection==null)connection = new SQLConnection(context);
+        try {
+            connection.createDatabaseConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        List<DataPakBean> dataPakBeanList = connection.getAllDataPaksInOneMonth(new Date().getYear(), new Date().getMonth());
+
         long currentTimeMillis = System.currentTimeMillis();
         long currentBytes = TrafficStats.getMobileRxBytes() + TrafficStats.getMobileTxBytes();
-//        long lastBytes = trafficHandler.getAllTrafficBytes(currentTimeMillis);
-//        long trafficAmount = currentBytes - lastBytes;
+        long trafficAmount = currentBytes - lastBytes;
+        lastBytes = currentBytes;
 
         //TODO 判断要减哪个流量包的流量
-//        for (PackageBean packageBean : trafficHandler.getPackageList()) {
-//            if(!packageBean.isDaily && !packageBean.isMonthly){
+
+        //TODO 获取used流量
+
+        //TODO updateused流量
+
+//        for (DataPakBean packageBean : dataPakBeanList) {
+//            if(!packageBean.getIsDataPakDaily() && !packageBean.getIsDataPakMonthly()){
 //                //节假日包
-//                if(packageBean.beginTimeMillis < currentTimeMillis && packageBean.endTimeMillis > currentTimeMillis){
-//                    trafficHandler.reduceTrafficBytes(packageBean.id, trafficAmount);
+//                if(Long.parseLong(packageBean.getDataPakStart()) < currentTimeMillis
+//                        && Long.parseLong(packageBean.getDataPakEnd()) > currentTimeMillis){
+//                    Double used = packageBean.getDataPakUsed() + trafficAmount;
+//                    connection.updateDataPak(packageBean.getId().toString(), used.toString());
 //                    break;
 //                }
 //            } else if(packageBean.isDaily && !packageBean.isMonthly){
@@ -57,6 +72,7 @@ public class DataReceiver extends BroadcastReceiver {
 //                //异常，不管
 //            }
 //        }
+
     }
 
     public static long getTimesMorning(){
@@ -68,28 +84,4 @@ public class DataReceiver extends BroadcastReceiver {
         return cal.getTimeInMillis();
     }
 
-    public interface TrafficHandler {
-        /**
-         *
-         * @return
-         */
-        List<PackageBean> getPackageList();
-
-        /**
-         * 减少流量包的剩余流量
-         *
-         * @param packageId     流量包的ID
-         * @param trafficAmount 减少的值，单位byte
-         */
-        void reduceTrafficBytes(String packageId, long trafficAmount);
-
-        /**
-         * 通过时间戳获取某月使用的全部流量，单位byte
-         * 注意是全部流量，不分闲时和普通
-         *
-         * @param timeMillis 时间戳
-         * @return 某月的全部流量
-         */
-        long getAllTrafficBytes(long timeMillis);
-    }
 }

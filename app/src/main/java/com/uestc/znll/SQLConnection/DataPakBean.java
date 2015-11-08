@@ -1,10 +1,4 @@
-package com.example.AndroidTest.SQLConnection;
-
-import android.provider.ContactsContract;
-import android.text.BoringLayout;
-
-import java.util.HashMap;
-import java.util.List;
+package com.uestc.znll.SQLConnection;
 
 /**
  * Created by ranweizhi on 15/11/2.

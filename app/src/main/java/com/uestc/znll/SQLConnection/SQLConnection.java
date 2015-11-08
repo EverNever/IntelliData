@@ -1,4 +1,4 @@
-package com.example.AndroidTest.SQLConnection;
+package com.uestc.znll.SQLConnection;
 
 import android.content.Context;
 import android.database.Cursor;
