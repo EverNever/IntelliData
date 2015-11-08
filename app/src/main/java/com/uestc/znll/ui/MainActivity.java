@@ -60,10 +60,10 @@ public class MainActivity extends BaseActivity {
     {
         List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("progressvalue", 50);
+        map.put("progressvalue", 10);
         map.put("datatype","闲时流量");
         map.put("datausage","每日23：00到次日6：00");//"每日23：00到次日6：00"
-        map.put("remainpecent","50%");
+        map.put("remainpecent","10%");
         map.put("remaindetail", "剩余1GB");
         list.add(map);
         return list;

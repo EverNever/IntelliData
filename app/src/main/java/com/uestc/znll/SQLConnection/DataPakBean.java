@@ -10,8 +10,8 @@ public class DataPakBean {
     private Integer Year;
     private String DataPakName;
     private String DataPakSpecifiedApp;
-    private Double DataPakSum;
-    private Double DataPakUsed;
+    private Long DataPakSum;
+    private Long DataPakUsed;
     private String DataPakStart;
     private String DataPakEnd;
     private Boolean IsDataPakDaily;
@@ -38,11 +38,11 @@ public class DataPakBean {
     }
 
     public void setDataPakSum (String DataPakSum) {
-        this.DataPakSum = Double.parseDouble(DataPakSum);
+        this.DataPakSum = Long.parseLong(DataPakSum);
     }
 
     public void setDataPakUsed (String DataPakUsed) {
-        this.DataPakUsed = Double.parseDouble(DataPakUsed);
+        this.DataPakUsed = Long.parseLong(DataPakUsed);
     }
 
     public void setDataPakStart (String DataPakStart) {
@@ -90,11 +90,11 @@ public class DataPakBean {
         return DataPakEnd;
     }
 
-    public Double getDataPakSum() {
+    public Long getDataPakSum() {
         return DataPakSum;
     }
 
-    public Double getDataPakUsed() {
+    public Long getDataPakUsed() {
         return DataPakUsed;
     }
 

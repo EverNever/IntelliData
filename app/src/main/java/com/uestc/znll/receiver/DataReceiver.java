@@ -21,6 +21,9 @@ public class DataReceiver extends BroadcastReceiver {
     private Context context;
     private long lastBytes = 0;//上次的receiver到从开机到现在的流量
 
+
+
+
     @Override
     public void onReceive(Context context, Intent intent) {
         if(connection==null)connection = new SQLConnection(context);
@@ -35,6 +38,8 @@ public class DataReceiver extends BroadcastReceiver {
         long currentBytes = TrafficStats.getMobileRxBytes() + TrafficStats.getMobileTxBytes();
         long trafficAmount = currentBytes - lastBytes;
         lastBytes = currentBytes;
+
+
 
         //TODO 判断要减哪个流量包的流量
 
@@ -83,5 +88,4 @@ public class DataReceiver extends BroadcastReceiver {
         cal.set(Calendar.MILLISECOND, 0);
         return cal.getTimeInMillis();
     }
-
 }
