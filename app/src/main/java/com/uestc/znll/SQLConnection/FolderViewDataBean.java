@@ -1,4 +1,4 @@
-package com.example.AndroidTest.SQLConnection;
+package com.uestc.znll.SQLConnection;
 
 /**
  * Created by ranweizhi on 15/11/2.
