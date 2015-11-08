@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.uestc.znll.R;
 import com.uestc.znll.view.Adapter.AbstractWheelTextAdapter;
-import com.uestc.znll.view.Adapter.WheelViewAdapter;
 import com.uestc.znll.view.OnWheelChangedListener;
 import com.uestc.znll.view.OnWheelScrollListener;
 import com.uestc.znll.view.WheelView;
@@ -43,7 +42,6 @@ public class ChangeBirthDialog extends Dialog implements View.OnClickListener {
 	private CalendarTextAdapter mMonthAdapter;
 	private CalendarTextAdapter mDaydapter;
 
-	private int month;
 	private int day;
 
 	private int currentYear = getYear();
@@ -53,17 +51,18 @@ public class ChangeBirthDialog extends Dialog implements View.OnClickListener {
 	private int maxTextSize = 24;
 	private int minTextSize = 14;
 
-	private boolean issetdata = false;
-
 	private String selectYear;
 	private String selectMonth;
 	private String selectDay;
 
+	private TextView textView;
+
 	private OnBirthListener onBirthListener;
 
-	public ChangeBirthDialog(Context context) {
+	public ChangeBirthDialog(Context context, TextView returnTextview) {
 		super(context, R.style.ShareDialog);
 		this.context = context;
+		textView = returnTextview;
 	}
 
 	@Override
@@ -84,23 +83,22 @@ public class ChangeBirthDialog extends Dialog implements View.OnClickListener {
 		btnSure.setOnClickListener(this);
 		btnCancel.setOnClickListener(this);
 
-		if (!issetdata) {
-			initData();
-		}
-		initYears();
-		mYearAdapter = new CalendarTextAdapter(context, arry_years, setYear(currentYear), maxTextSize, minTextSize);
-		wvYear.setVisibleItems(5);
-		wvYear.setViewAdapter((WheelViewAdapter) mYearAdapter);
-		wvYear.setCurrentItem(setYear(currentYear));
+		initData();
 
-		initMonths(month);
-		mMonthAdapter = new CalendarTextAdapter(context, arry_months, setMonth(currentMonth), maxTextSize, minTextSize);
+		initYears();
+		mYearAdapter = new CalendarTextAdapter(context, arry_years, 1, maxTextSize, minTextSize);
+		wvYear.setVisibleItems(5);
+		wvYear.setViewAdapter(mYearAdapter);
+		wvYear.setCurrentItem(1);
+
+		initMonths();
+		mMonthAdapter = new CalendarTextAdapter(context, arry_months, currentMonth - 1, maxTextSize, minTextSize);
 		wvMonth.setVisibleItems(5);
 		wvMonth.setViewAdapter(mMonthAdapter);
-		wvMonth.setCurrentItem(setMonth(currentMonth));
+		wvMonth.setCurrentItem(currentMonth - 1);
 
-		initDays(day);
-		mDaydapter = new CalendarTextAdapter(context, arry_days, currentDay - 1, maxTextSize, minTextSize);
+		initDays();
+		mDaydapter = new CalendarTextAdapter(context, arry_days, currentDay -1 , maxTextSize, minTextSize);
 		wvDay.setVisibleItems(5);
 		wvDay.setViewAdapter(mDaydapter);
 		wvDay.setCurrentItem(currentDay - 1);
@@ -114,12 +112,6 @@ public class ChangeBirthDialog extends Dialog implements View.OnClickListener {
 				selectYear = currentText;
 				setTextviewSize(currentText, mYearAdapter);
 				currentYear = Integer.parseInt(currentText);
-				setYear(currentYear);
-				initMonths(month);
-				mMonthAdapter = new CalendarTextAdapter(context, arry_months, 0, maxTextSize, minTextSize);
-				wvMonth.setVisibleItems(5);
-				wvMonth.setViewAdapter(mMonthAdapter);
-				wvMonth.setCurrentItem(0);
 			}
 		});
 
@@ -146,13 +138,14 @@ public class ChangeBirthDialog extends Dialog implements View.OnClickListener {
 				// TODO Auto-generated method stub
 				String currentText = (String) mMonthAdapter.getItemText(wheel.getCurrentItem());
 				selectMonth = currentText;
+				currentMonth = Integer.parseInt(currentText);
 				setTextviewSize(currentText, mMonthAdapter);
-				setMonth(Integer.parseInt(currentText));
-				initDays(day);
-				mDaydapter = new CalendarTextAdapter(context, arry_days, 0, maxTextSize, minTextSize);
+				initDays();
+				currentDay = 1;
+				mDaydapter = new CalendarTextAdapter(context, arry_days, currentDay - 1, maxTextSize, minTextSize);
 				wvDay.setVisibleItems(5);
 				wvDay.setViewAdapter(mDaydapter);
-				wvDay.setCurrentItem(0);
+				wvDay.setCurrentItem(currentDay - 1);
 			}
 		});
 
@@ -180,6 +173,7 @@ public class ChangeBirthDialog extends Dialog implements View.OnClickListener {
 				String currentText = (String) mDaydapter.getItemText(wheel.getCurrentItem());
 				setTextviewSize(currentText, mDaydapter);
 				selectDay = currentText;
+				currentDay = Integer.parseInt(currentText);
 			}
 		});
 
@@ -202,21 +196,21 @@ public class ChangeBirthDialog extends Dialog implements View.OnClickListener {
 	}
 
 	public void initYears() {
-		for (int i = getYear(); i > 1950; i--) {
-			arry_years.add(i + "");
+		for (int i = -1; i < 2; i++) {
+			arry_years.add((i + currentYear) + "");
 		}
 	}
 
-	public void initMonths(int months) {
+	public void initMonths() {
 		arry_months.clear();
-		for (int i = 1; i <= months; i++) {
+		for (int i = 1; i <= 12; i++) {
 			arry_months.add(i + "");
 		}
 	}
 
-	public void initDays(int days) {
+	public void initDays() {
 		arry_days.clear();
-		for (int i = 1; i <= days; i++) {
+		for (int i = 1; i <= calDays(this.currentYear,this.currentMonth); i++) {
 			arry_days.add(i + "");
 		}
 	}
@@ -258,7 +252,8 @@ public class ChangeBirthDialog extends Dialog implements View.OnClickListener {
 			if (onBirthListener != null) {
 				onBirthListener.onClick(selectYear, selectMonth, selectDay);
 			}
-		} else if (v == btnSure) {
+			textView.setText(currentYear + "-" + currentMonth + "-" + currentDay);
+		} else if (v == btnCancel) {
 
 		} else if (v == vChangeBirthChild) {
 			return;
@@ -275,7 +270,7 @@ public class ChangeBirthDialog extends Dialog implements View.OnClickListener {
 
 	/**
 	 * 设置字体大小
-	 * 
+	 *
 	 * @param curriteItemText
 	 * @param adapter
 	 */
@@ -311,81 +306,39 @@ public class ChangeBirthDialog extends Dialog implements View.OnClickListener {
 
 	public void initData() {
 		setDate(getYear(), getMonth(), getDay());
-		this.currentDay = 1;
-		this.currentMonth = 1;
 	}
 
 	/**
 	 * 设置年月日
-	 * 
+	 *
 	 * @param year
 	 * @param month
 	 * @param day
 	 */
 	public void setDate(int year, int month, int day) {
-		selectYear = year + "";
-		selectMonth = month + "";
-		selectDay = day + "";
-		issetdata = true;
-		this.currentYear = year;
-		this.currentMonth = month;
-		this.currentDay = day;
-		if (year == getYear()) {
-			this.month = getMonth();
-		} else {
-			this.month = 12;
-		}
-		calDays(year, month);
-	}
 
-	/**
-	 * 设置年份
-	 * 
-	 * @param year
-	 */
-	public int setYear(int year) {
-		int yearIndex = 0;
-		if (year != getYear()) {
-			this.month = 12;
-		} else {
-			this.month = getMonth();
+		if(!textView.getText().toString().isEmpty())
+		{
+			String tmpString[] = textView.getText().toString().split("-");
+			currentYear = Integer.parseInt(tmpString[0]);
+			currentMonth = Integer.parseInt(tmpString[1]);
+			currentDay = Integer.parseInt(tmpString[2]);
+		}else{
+			this.currentYear = year;
+			this.currentMonth = month;
+			this.currentDay = day;
 		}
-		for (int i = getYear(); i > 1950; i--) {
-			if (i == year) {
-				return yearIndex;
-			}
-			yearIndex++;
-		}
-		return yearIndex;
-	}
-
-	/**
-	 * 设置月份
-	 * 
-	 * @param year
-	 * @param month
-	 * @return
-	 */
-	public int setMonth(int month) {
-		int monthIndex = 0;
-		calDays(currentYear, month);
-		for (int i = 1; i < this.month; i++) {
-			if (month == i) {
-				return monthIndex;
-			} else {
-				monthIndex++;
-			}
-		}
-		return monthIndex;
+		selectYear = currentYear + "";
+		selectMonth = currentMonth + "";
+		selectDay = currentDay + "";
 	}
 
 	/**
 	 * 计算每月多少天
-	 * 
+	 *
 	 * @param month
-	 * @param leayyear
 	 */
-	public void calDays(int year, int month) {
+	public int calDays(int year, int month) {
 		boolean leayyear = false;
 		if (year % 4 == 0 && year % 100 != 0) {
 			leayyear = true;
@@ -394,32 +347,27 @@ public class ChangeBirthDialog extends Dialog implements View.OnClickListener {
 		}
 		for (int i = 1; i <= 12; i++) {
 			switch (month) {
-			case 1:
-			case 3:
-			case 5:
-			case 7:
-			case 8:
-			case 10:
-			case 12:
-				this.day = 31;
-				break;
-			case 2:
-				if (leayyear) {
-					this.day = 29;
-				} else {
-					this.day = 28;
-				}
-				break;
-			case 4:
-			case 6:
-			case 9:
-			case 11:
-				this.day = 30;
-				break;
+				case 1:
+				case 3:
+				case 5:
+				case 7:
+				case 8:
+				case 10:
+				case 12:
+					return 31;
+				case 2:
+					if (leayyear) {
+						return 29;
+					} else {
+						return 28;
+					}
+				case 4:
+				case 6:
+				case 9:
+				case 11:
+					return 30;
 			}
 		}
-		if (year == getYear() && month == getMonth()) {
-			this.day = getDay();
-		}
+		return 30;
 	}
 }

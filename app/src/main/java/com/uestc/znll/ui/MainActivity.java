@@ -44,8 +44,8 @@ public class MainActivity extends BaseActivity {
         imageButtonEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainEditDialog dialog = new MainEditDialog(MainActivity.this);
-                dialog.show();
+                Intent intent = new Intent(MainActivity.this,AddDataActivity.class);
+                startActivity(intent);
             }
         });
 
