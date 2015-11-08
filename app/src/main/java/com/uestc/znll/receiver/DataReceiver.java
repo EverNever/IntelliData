@@ -4,8 +4,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.TrafficStats;
+import android.provider.ContactsContract;
+
+import com.uestc.znll.SQLConnection.DataPakBean;
+import com.uestc.znll.SQLConnection.FolderViewDataBean;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,12 +26,33 @@ public class DataReceiver extends BroadcastReceiver {
 //        trafficHandler = new DBAdapter();
     }
 
+
+
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        long currentTimeMillis = System.currentTimeMillis();
-        long currentBytes = TrafficStats.getMobileRxBytes() + TrafficStats.getMobileTxBytes();
+        Long currentTimeMillis = System.currentTimeMillis();
+        Long currentBytes = TrafficStats.getMobileRxBytes() + TrafficStats.getMobileTxBytes();
+        Long lastBytes ;
+        Date date = new Date();
+
+        List<DataPakBean> dataPakBeans = TrafficHandle.getDataPakInMonth(date.getYear(), date.getMonth());
+
+        for (DataPakBean dataPakBean : dataPakBeans) {
+            if (!dataPakBean.getIsDataPakDaily() && !dataPakBean.getIsDataPakMonthly()) {
+                //节假日流量包
+                if (Integer.parseInt( dataPakBean.getDataPakStart()) < currentTimeMillis && Integer.parseInt(dataPakBean.getDataPakEnd()) > currentTimeMillis) {
+                    //在节假日期间
+                    lastBytes = dataPakBean.getDataPakUsed();
+                    Long trafficAmount = currentBytes - lastBytes;
+                    TrafficHandle.reduceData(dataPakBean.getId().toString(),trafficAmount);
+                }
+            }
+
+        }
 //        long lastBytes = trafficHandler.getAllTrafficBytes(currentTimeMillis);
 //        long trafficAmount = currentBytes - lastBytes;
+
 
         //TODO 判断要减哪个流量包的流量
 //        for (PackageBean packageBean : trafficHandler.getPackageList()) {
@@ -73,7 +99,9 @@ public class DataReceiver extends BroadcastReceiver {
          *
          * @return
          */
-        List<PackageBean> getPackageList();
+        List<FolderViewDataBean> getFolderViewDataList();
+
+        List<DataPakBean> getPackageList();
 
         /**
          * 减少流量包的剩余流量
