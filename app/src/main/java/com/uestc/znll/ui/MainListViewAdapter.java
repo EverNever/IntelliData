@@ -83,33 +83,33 @@ public class MainListViewAdapter extends BaseAdapter {
             progress = 0;
         }
         m_progressbar.setProgress(progress);
-       switch (progress/10)
-       {
-           case 0:
-           case 1:
-           case 2:
-               m_progressbar.setProgressDrawable(m_context.getResources().getDrawable(R.drawable.progressbar_color_0_to_10));
-               break;
-           case 3:
-           case 4:
-               m_progressbar.setProgressDrawable(m_context.getResources().getDrawable(R.drawable.progressbar_color_10_to_20));
-               break;
-           case 5:
-               m_progressbar.setProgressDrawable(m_context.getResources().getDrawable(R.drawable.progressbar_color_20_to_30));
-               break;
-           case 6:
-           case 7:
-               m_progressbar.setProgressDrawable(m_context.getResources().getDrawable(R.drawable.progressbar_color_30_to_40));
-               break;
-           case 8:
-           case 9:
-               m_progressbar.setProgressDrawable(m_context.getResources().getDrawable(R.drawable.progressbar_color_40_to_50));
-               break;
-           case 10:
-           default:
-               m_progressbar.setProgressDrawable(m_context.getResources().getDrawable(R.drawable.progressbar_color_50_to_60));
-               break;
+        switch (progress/10)
+        {
+            case 0:
+            case 1:
+            case 2:
+                m_progressbar.setProgressDrawable(m_context.getResources().getDrawable(R.drawable.progressbar_color_0_to_10));
+                break;
+            case 3:
+            case 4:
+                m_progressbar.setProgressDrawable(m_context.getResources().getDrawable(R.drawable.progressbar_color_10_to_20));
+                break;
+            case 5:
+                m_progressbar.setProgressDrawable(m_context.getResources().getDrawable(R.drawable.progressbar_color_20_to_30));
+                break;
+            case 6:
+            case 7:
+                m_progressbar.setProgressDrawable(m_context.getResources().getDrawable(R.drawable.progressbar_color_30_to_40));
+                break;
+            case 8:
+            case 9:
+                m_progressbar.setProgressDrawable(m_context.getResources().getDrawable(R.drawable.progressbar_color_40_to_50));
+                break;
+            case 10:
+            default:
+                m_progressbar.setProgressDrawable(m_context.getResources().getDrawable(R.drawable.progressbar_color_50_to_60));
+                break;
 
-       }
+        }
     }
 }
