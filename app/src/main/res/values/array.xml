@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="adddataMorG">
+        <item>MB</item>
+        <item>GB</item>
+    </string-array>
+    <string-array name="adddatacategory">
+        <item>普通套餐</item>
+        <item>闲时流量</item>
+        <item>节假日流量</item>
+        <item>单月流量包</item>
+    </string-array>
+</resources>

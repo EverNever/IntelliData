@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="2px"
+        android:background="#cccccc"></LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp">
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:textSize="18sp"
+            android:text="所有数据记录"
+            android:textStyle="bold"
+            android:textColor="#777777"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:id="@+id/folderview_listviewitem_textview_month"/>
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_centerVertical="true"
+            android:text="hello"
+            android:textSize="18sp"
+            android:layout_marginRight="5px"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:id="@+id/folderview_listviewitem_textview_detail"/>
+        <ImageButton
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="2"
+            android:src="@drawable/button_folderview_open"
+            android:background="#00000000"
+            android:id="@+id/folderview_listviewitem_button_open"/>
+    </LinearLayout>
+</LinearLayout>
