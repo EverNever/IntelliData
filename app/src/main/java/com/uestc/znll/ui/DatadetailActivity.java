@@ -20,8 +20,17 @@ public class DatadetailActivity extends FragmentActivity {
 
     private Class tabFragmentClass[] = {DatadetailFragmentGraphic.class,DatadetailFragmentList.class};
     private int tabItemImage[]={R.drawable.button_datadetail_graphic,
-                                    R.drawable.button_datadetail_list};
+            R.drawable.button_datadetail_list};
     private String tabItemText[]={"图标汇总","详细数据"};
+    private int currentIndex = 0;
+    private View.OnClickListener clickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            currentIndex = (currentIndex+1)%2;
+            tabHost.setCurrentTab(currentIndex);
+            System.out.println("CurrentIndex = " + currentIndex);
+        }
+    };
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -51,7 +60,9 @@ public class DatadetailActivity extends FragmentActivity {
     }
 
     protected void initListener() {
-//        tabHost.getTabWidget()
+        tabHost.getTabWidget().getChildTabViewAt(0).setOnClickListener(clickListener);
+        tabHost.getTabWidget().getChildTabViewAt(1).setOnClickListener(clickListener);
+
     }
 
     protected int setRootView() {
@@ -59,11 +70,14 @@ public class DatadetailActivity extends FragmentActivity {
     }
 
     private View getTabItemView(int index) {
+
         View view = LayoutInflater.from(this).inflate(R.layout.datadetail_tab_item, null);
         ImageView imageview = (ImageView) view.findViewById(R.id.datadetail_tabitem_imagebutton);
         imageview.setImageResource(tabItemImage[index]);
         TextView textview = (TextView) view.findViewById(R.id.datadetail_tabitem_textview);
         textview.setText(tabItemText[index]);
+        imageview.setOnClickListener(clickListener);
+        textview.setOnClickListener(clickListener);
         return view;
     }
 }

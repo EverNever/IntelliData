@@ -34,6 +34,7 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:id="@+id/datadetail_realcontent">
+
         </FrameLayout>
         <android.support.v4.app.FragmentTabHost
             android:layout_width="fill_parent"
