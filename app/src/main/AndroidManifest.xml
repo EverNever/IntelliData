@@ -22,6 +22,9 @@
         <activity android:name=".ui.FolderViewActivity" >
 
         </activity>
+        <activity android:name=".ui.AddDataActivity">
+
+        </activity>
         <receiver android:name=".receiver.DataReceiver">
 
         </receiver>

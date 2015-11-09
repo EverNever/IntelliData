@@ -17,7 +17,7 @@ import java.util.List;
  * Created by chao on 2015/11/4.
  */
 public class DataReceiver extends BroadcastReceiver {
-    private SQLConnection connection;
+//    private SQLConnection connection;
     private Context context;
     private long lastBytes = 0;//上次的receiver到从开机到现在的流量
 
@@ -26,13 +26,13 @@ public class DataReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if(connection==null)connection = new SQLConnection(context);
-        try {
-            connection.createDatabaseConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        List<DataPakBean> dataPakBeanList = connection.getAllDataPaksInOneMonth(new Date().getYear(), new Date().getMonth());
+//        if(connection==null)connection = new SQLConnection(context);
+//        try {
+//            connection.createDatabaseConnection();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        List<DataPakBean> dataPakBeanList = connection.getAllDataPaksInOneMonth(new Date().getYear(), new Date().getMonth());
 
         long currentTimeMillis = System.currentTimeMillis();
         long currentBytes = TrafficStats.getMobileRxBytes() + TrafficStats.getMobileTxBytes();

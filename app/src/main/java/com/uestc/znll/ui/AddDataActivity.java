@@ -1,5 +1,6 @@
 package com.uestc.znll.ui;
 
+import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.uestc.znll.R;
+import com.uestc.znll.SQLConnection.DataPakBean;
 
 import java.util.Calendar;
 
@@ -31,6 +33,36 @@ public class AddDataActivity extends BaseActivity {
     private EditText usedData;
     private Spinner usedDataMorG;
     private Button btnOk;
+
+    private DataPakBean bean;
+    private boolean modifyOrAdd;//0-add 1-modify
+
+    public void AddDataActivity(DataPakBean bean)
+    {
+        this.bean = bean;
+        modifyOrAdd = true;
+    }
+    public void AddDataActivity()
+    {
+        this.bean = null;
+        modifyOrAdd = false;
+    }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(modifyOrAdd)
+        {
+            packageName.setText(bean.getDataPakName());
+//            dataCategory.
+            //上面一行需要设置流量套餐的种类，dataCategory 是一个spinner
+//            beginTime.setText()
+//            endTime.setText();
+//            totalData.setText(bean.getDataPakSum().toString());
+//            usedData.setText(bean.getDataPakUsed().toString());
+            //上面的两行需要修改，totalData设置为流量数字，totalDataMorG设置为单位
+            //totalDataMorG usedDataMorG 都是spinner
+        }
+    }
 
     @Override
     protected void initLayout() {
@@ -96,7 +128,7 @@ public class AddDataActivity extends BaseActivity {
             public void onClick(View v) {
                 if("节假日流量".equals(dataCategory.getSelectedItem().toString()))
                 {
-                    ChangeBirthDialog dialog = new ChangeBirthDialog(AddDataActivity.this,beginTime);
+                    DatePickerDialog dialog = new DatePickerDialog(AddDataActivity.this,beginTime);
                     dialog.show();
                 }else
                 {
@@ -110,7 +142,7 @@ public class AddDataActivity extends BaseActivity {
             public void onClick(View v) {
                 if("节假日流量".equals(dataCategory.getSelectedItem().toString()))
                 {
-                    ChangeBirthDialog dialog = new ChangeBirthDialog(AddDataActivity.this,endTime);
+                    DatePickerDialog dialog = new DatePickerDialog(AddDataActivity.this,endTime);
                     dialog.show();
                 }else
                 {
@@ -176,4 +208,5 @@ public class AddDataActivity extends BaseActivity {
         beginTime.setText(tmpText);
         endTime.setText(tmpText);
     }
+
 }

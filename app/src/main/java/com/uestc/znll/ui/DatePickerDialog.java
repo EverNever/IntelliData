@@ -16,264 +16,358 @@ import com.uestc.znll.view.OnWheelChangedListener;
 import com.uestc.znll.view.OnWheelScrollListener;
 import com.uestc.znll.view.WheelView;
 
-import org.w3c.dom.Text;
-
 
 /**
  * 日期选择对话框
- *
+ * 
  * @author ywl
  *
  */
 public class DatePickerDialog extends Dialog implements View.OnClickListener {
 
-    private Context context;
-    private TextView textView;
-    private WheelView wvMonth;
-    private WheelView wvDay
-            ;
+	private Context context;
+	private WheelView wvYear;
+	private WheelView wvMonth;
+	private WheelView wvDay;
 
-    private TextView btnSure;
-    private TextView btnCancel;
+	private View vChangeBirth;
+	private View vChangeBirthChild;
+	private TextView btnSure;
+	private TextView btnCancel;
 
-    private ArrayList<String> arry_Months = new ArrayList<String>();
-    private ArrayList<String> arry_Days = new ArrayList<String>();
-    private CalendarTextAdapter mMonthAdapter;
-    private CalendarTextAdapter mDaydapter;
+	private ArrayList<String> arry_years = new ArrayList<String>();
+	private ArrayList<String> arry_months = new ArrayList<String>();
+	private ArrayList<String> arry_days = new ArrayList<String>();
+	private CalendarTextAdapter mYearAdapter;
+	private CalendarTextAdapter mMonthAdapter;
+	private CalendarTextAdapter mDaydapter;
 
-    private int currentYear = 2015;
-    private int currentMonth = 1;
-    private int currentDay = 1;
+	private int day;
 
-    private int maxTextSize = 24;
-    private int minTextSize = 14;
+	private int currentYear = getYear();
+	private int currentMonth = 1;
+	private int currentDay = 1;
 
-    private boolean issetdata = false;
+	private int maxTextSize = 24;
+	private int minTextSize = 14;
 
-    private String selectMonth;
-    private String selectDay
-            ;
+	private String selectYear;
+	private String selectMonth;
+	private String selectDay;
 
-    private OnBirthListener onBirthListener;
+	private TextView textView;
 
-    public DatePickerDialog(Context context, TextView returnTextView) {
-        super(context, R.style.ShareDialog);
-        this.context = context;
-        textView = returnTextView;
-    }
+	private OnBirthListener onBirthListener;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.dialog_datepicker);
-        wvMonth = (WheelView) findViewById(R.id.wv_month);
-        wvDay = (WheelView) findViewById(R.id.wv_day);
+	public DatePickerDialog(Context context, TextView returnTextview) {
+		super(context, R.style.ShareDialog);
+		this.context = context;
+		textView = returnTextview;
+	}
 
-        btnSure = (TextView) findViewById(R.id.btn_datepicker_sure);
-        btnCancel = (TextView) findViewById(R.id.btn_datepicker_cancel);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.dialog_myinfo_changebirth);
+		wvYear = (WheelView) findViewById(R.id.wv_birth_year);
+		wvMonth = (WheelView) findViewById(R.id.wv_birth_month);
+		wvDay = (WheelView) findViewById(R.id.wv_birth_day);
 
-        btnSure.setOnClickListener(this);
-        btnCancel.setOnClickListener(this);
+		vChangeBirth = findViewById(R.id.ly_myinfo_changebirth);
+		vChangeBirthChild = findViewById(R.id.ly_myinfo_changebirth_child);
+		btnSure = (TextView) findViewById(R.id.btn_myinfo_sure);
+		btnCancel = (TextView) findViewById(R.id.btn_myinfo_cancel);
 
-        if (!issetdata) {
-            initData();
-        }
+		vChangeBirth.setOnClickListener(this);
+		vChangeBirthChild.setOnClickListener(this);
+		btnSure.setOnClickListener(this);
+		btnCancel.setOnClickListener(this);
 
-        initMonths();
-        mMonthAdapter = new CalendarTextAdapter(context, arry_Months,currentMonth, maxTextSize, minTextSize);
-        wvMonth.setViewAdapter(mMonthAdapter);
-        wvMonth.setCurrentItem(currentMonth);
+		initData();
 
-        initDays();
-        mDaydapter = new CalendarTextAdapter(context, arry_Days, currentDay, maxTextSize, minTextSize);
-        wvDay.setViewAdapter(mDaydapter);
-        wvDay.setCurrentItem(currentDay);
+		initYears();
+		mYearAdapter = new CalendarTextAdapter(context, arry_years, 1, maxTextSize, minTextSize);
+		wvYear.setVisibleItems(5);
+		wvYear.setViewAdapter(mYearAdapter);
+		wvYear.setCurrentItem(1);
 
-        wvMonth.addChangingListener(new OnWheelChangedListener() {
+		initMonths();
+		mMonthAdapter = new CalendarTextAdapter(context, arry_months, currentMonth - 1, maxTextSize, minTextSize);
+		wvMonth.setVisibleItems(5);
+		wvMonth.setViewAdapter(mMonthAdapter);
+		wvMonth.setCurrentItem(currentMonth - 1);
 
-            @Override
-            public void onChanged(WheelView wheel, int oldValue, int newValue) {
-                // TODO Auto-generated method stub
-                String currentText = (String) mMonthAdapter.getItemText(wheel.getCurrentItem());
-                System.out.println("Month = " + currentText);
-                selectMonth = currentText;
-                setTextviewSize(currentText, mMonthAdapter);
-            }
-        });
+		initDays();
+		mDaydapter = new CalendarTextAdapter(context, arry_days, currentDay -1 , maxTextSize, minTextSize);
+		wvDay.setVisibleItems(5);
+		wvDay.setViewAdapter(mDaydapter);
+		wvDay.setCurrentItem(currentDay - 1);
 
-        wvMonth.addScrollingListener(new OnWheelScrollListener() {
+		wvYear.addChangingListener(new OnWheelChangedListener() {
 
-            @Override
-            public void onScrollingStarted(WheelView wheel) {
-                // TODO Auto-generated method stub
+			@Override
+			public void onChanged(WheelView wheel, int oldValue, int newValue) {
+				// TODO Auto-generated method stub
+				String currentText = (String) mYearAdapter.getItemText(wheel.getCurrentItem());
+				selectYear = currentText;
+				setTextviewSize(currentText, mYearAdapter);
+				currentYear = Integer.parseInt(currentText);
+			}
+		});
 
-            }
+		wvYear.addScrollingListener(new OnWheelScrollListener() {
 
-            @Override
-            public void onScrollingFinished(WheelView wheel) {
-                // TODO Auto-generated method stub
-                String currentText = (String) mMonthAdapter.getItemText(wheel.getCurrentItem());
-                setTextviewSize(currentText, mMonthAdapter);
-            }
-        });
+			@Override
+			public void onScrollingStarted(WheelView wheel) {
+				// TODO Auto-generated method stub
 
-        wvDay.addChangingListener(new OnWheelChangedListener() {
+			}
 
-            @Override
-            public void onChanged(WheelView wheel, int oldValue, int newValue) {
-                // TODO Auto-generated method stub
-                String currentText = (String) mDaydapter.getItemText(wheel.getCurrentItem());
-                setTextviewSize(currentText, mDaydapter);
-                selectDay = currentText;
-                System.out.println("Day" + " = " + selectDay);
-            }
-        });
+			@Override
+			public void onScrollingFinished(WheelView wheel) {
+				// TODO Auto-generated method stub
+				String currentText = (String) mYearAdapter.getItemText(wheel.getCurrentItem());
+				setTextviewSize(currentText, mYearAdapter);
+			}
+		});
 
-        wvDay.addScrollingListener(new OnWheelScrollListener() {
+		wvMonth.addChangingListener(new OnWheelChangedListener() {
 
-            @Override
-            public void onScrollingStarted(WheelView wheel) {
-                // TODO Auto-generated method stub
+			@Override
+			public void onChanged(WheelView wheel, int oldValue, int newValue) {
+				// TODO Auto-generated method stub
+				String currentText = (String) mMonthAdapter.getItemText(wheel.getCurrentItem());
+				selectMonth = currentText;
+				currentMonth = Integer.parseInt(currentText);
+				setTextviewSize(currentText, mMonthAdapter);
+				initDays();
+				currentDay = 1;
+				mDaydapter = new CalendarTextAdapter(context, arry_days, currentDay - 1, maxTextSize, minTextSize);
+				wvDay.setVisibleItems(5);
+				wvDay.setViewAdapter(mDaydapter);
+				wvDay.setCurrentItem(currentDay - 1);
+			}
+		});
 
-            }
+		wvMonth.addScrollingListener(new OnWheelScrollListener() {
 
-            @Override
-            public void onScrollingFinished(WheelView wheel) {
-                // TODO Auto-generated method stub
-                String currentText = (String) mDaydapter.getItemText(wheel.getCurrentItem());
-                setTextviewSize(currentText, mDaydapter);
-            }
-        });
+			@Override
+			public void onScrollingStarted(WheelView wheel) {
+				// TODO Auto-generated method stub
 
-    }
+			}
 
-    public void initMonths() {
-        for(int i = 0; i < 24;i++)
-        {
-            arry_Months.add(i + "");
-        }
-    }
+			@Override
+			public void onScrollingFinished(WheelView wheel) {
+				// TODO Auto-generated method stub
+				String currentText = (String) mMonthAdapter.getItemText(wheel.getCurrentItem());
+				setTextviewSize(currentText, mMonthAdapter);
+			}
+		});
 
-    public void initDays() {
-        for (int i = 0; i < 60; i++) {
-            arry_Days.add(i + "");
-        }
-    }
+		wvDay.addChangingListener(new OnWheelChangedListener() {
 
-    private class CalendarTextAdapter extends AbstractWheelTextAdapter {
-        ArrayList<String> list;
+			@Override
+			public void onChanged(WheelView wheel, int oldValue, int newValue) {
+				// TODO Auto-generated method stub
+				String currentText = (String) mDaydapter.getItemText(wheel.getCurrentItem());
+				setTextviewSize(currentText, mDaydapter);
+				selectDay = currentText;
+				currentDay = Integer.parseInt(currentText);
+			}
+		});
 
-        protected CalendarTextAdapter(Context context, ArrayList<String> list, int currentItem, int maxsize, int minsize) {
-            super(context, R.layout.item_birth_year, NO_RESOURCE, currentItem, maxsize, minsize);
-            this.list = list;
-            setItemTextResource(R.id.tempValue);
-        }
+		wvDay.addScrollingListener(new OnWheelScrollListener() {
 
-        @Override
-        public View getItem(int index, View cachedView, ViewGroup parent) {
-            View view = super.getItem(index, cachedView, parent);
-            return view;
-        }
+			@Override
+			public void onScrollingStarted(WheelView wheel) {
+				// TODO Auto-generated method stub
 
-        @Override
-        public int getItemsCount() {
-            return list.size();
-        }
+			}
 
-        @Override
-        protected CharSequence getItemText(int index) {
-            return list.get(index) + "";
-        }
-    }
+			@Override
+			public void onScrollingFinished(WheelView wheel) {
+				// TODO Auto-generated method stub
+				String currentText = (String) mDaydapter.getItemText(wheel.getCurrentItem());
+				setTextviewSize(currentText, mDaydapter);
+			}
+		});
 
-    @Override
-    public void onClick(View v) {
+	}
 
-        if (v == btnSure) {
-            if (onBirthListener != null) {
-                onBirthListener.onClick(selectMonth, selectDay);
-            }
-        } else if (v == btnCancel) {
+	public void initYears() {
+		for (int i = -1; i < 2; i++) {
+			arry_years.add((i + currentYear) + "");
+		}
+	}
 
-        } else {
-            dismiss();
-        }
-        dismiss();
+	public void initMonths() {
+		arry_months.clear();
+		for (int i = 1; i <= 12; i++) {
+			arry_months.add(i + "");
+		}
+	}
 
-    }
+	public void initDays() {
+		arry_days.clear();
+		for (int i = 1; i <= calDays(this.currentYear,this.currentMonth); i++) {
+			arry_days.add(i + "");
+		}
+	}
 
-    public interface OnBirthListener {
-        public void onClick(String Month, String Day
-        );
-    }
+	private class CalendarTextAdapter extends AbstractWheelTextAdapter {
+		ArrayList<String> list;
 
-    /**
-     * 设置字体大小
-     *
-     * @param curriteItemText
-     * @param adapter
-     */
-    public void setTextviewSize(String curriteItemText, CalendarTextAdapter adapter) {
-        ArrayList<View> arrayList = adapter.getTestViews();
-        int size = arrayList.size();
-        String currentText;
-        for (int i = 0; i < size; i++) {
-            TextView textvew = (TextView) arrayList.get(i);
-            currentText = textvew.getText().toString();
-            if (curriteItemText.equals(currentText)) {
-                textvew.setTextSize(maxTextSize);
-            } else {
-                textvew.setTextSize(minTextSize);
-            }
-        }
-    }
+		protected CalendarTextAdapter(Context context, ArrayList<String> list, int currentItem, int maxsize, int minsize) {
+			super(context, R.layout.item_birth_year, NO_RESOURCE, currentItem, maxsize, minsize);
+			this.list = list;
+			setItemTextResource(R.id.tempValue);
+		}
 
-    public int getYear(){
-        Calendar c = Calendar.getInstance();
-        return c.get(Calendar.YEAR);
-    }
-    public int getMonth() {
-        Calendar c = Calendar.getInstance();
-        return c.get(Calendar.MONTH);
-    }
+		@Override
+		public View getItem(int index, View cachedView, ViewGroup parent) {
+			View view = super.getItem(index, cachedView, parent);
+			return view;
+		}
 
-    public int getDay(){
-        Calendar c = Calendar.getInstance();
-        return c.get(Calendar.DAY_OF_MONTH);
-    }
+		@Override
+		public int getItemsCount() {
+			return list.size();
+		}
 
-    public void initData() {
-        if(!textView.getText().toString().equals(""))
-        {
-            String text[] = textView.getText().toString().split("-");
-            for(int i=0;i<text.length;i++)
-            {
-                System.out.println(text[i]);
-            }
-            currentYear = 0;
-            currentMonth = Integer.parseInt(text[1]);
-            currentDay = Integer.parseInt(text[2]);
-        }else
-        {
-            currentMonth = getMonth();
-            currentDay = getDay();
-        }
-        setDate(currentMonth,currentDay);
-    }
+		@Override
+		protected CharSequence getItemText(int index) {
+			return list.get(index) + "";
+		}
+	}
 
-    /**
-     * 设置年月日
-     *
-     * @param Month
-     * @param Day
-     *
-     */
-    public void setDate( int Month, int Day
-    ) {
-        selectMonth = Month + "";
-        selectDay = Day + "";
-        issetdata = true;
-        this.currentMonth = Month;
-        this.currentDay = Day;
-    }
+	public void setBirthdayListener(OnBirthListener onBirthListener) {
+		this.onBirthListener = onBirthListener;
+	}
+
+	@Override
+	public void onClick(View v) {
+
+		if (v == btnSure) {
+			if (onBirthListener != null) {
+				onBirthListener.onClick(selectYear, selectMonth, selectDay);
+			}
+			textView.setText(currentYear + "-" + currentMonth + "-" + currentDay);
+		} else if (v == btnCancel) {
+
+		} else if (v == vChangeBirthChild) {
+			return;
+		} else {
+			dismiss();
+		}
+		dismiss();
+
+	}
+
+	public interface OnBirthListener {
+		public void onClick(String year, String month, String day);
+	}
+
+	/**
+	 * 设置字体大小
+	 *
+	 * @param curriteItemText
+	 * @param adapter
+	 */
+	public void setTextviewSize(String curriteItemText, CalendarTextAdapter adapter) {
+		ArrayList<View> arrayList = adapter.getTestViews();
+		int size = arrayList.size();
+		String currentText;
+		for (int i = 0; i < size; i++) {
+			TextView textvew = (TextView) arrayList.get(i);
+			currentText = textvew.getText().toString();
+			if (curriteItemText.equals(currentText)) {
+				textvew.setTextSize(maxTextSize);
+			} else {
+				textvew.setTextSize(minTextSize);
+			}
+		}
+	}
+
+	public int getYear() {
+		Calendar c = Calendar.getInstance();
+		return c.get(Calendar.YEAR);
+	}
+
+	public int getMonth() {
+		Calendar c = Calendar.getInstance();
+		return c.get(Calendar.MONTH) + 1;
+	}
+
+	public int getDay() {
+		Calendar c = Calendar.getInstance();
+		return c.get(Calendar.DATE);
+	}
+
+	public void initData() {
+		setDate(getYear(), getMonth(), getDay());
+	}
+
+	/**
+	 * 设置年月日
+	 *
+	 * @param year
+	 * @param month
+	 * @param day
+	 */
+	public void setDate(int year, int month, int day) {
+
+		if(!textView.getText().toString().isEmpty())
+		{
+			String tmpString[] = textView.getText().toString().split("-");
+			currentYear = Integer.parseInt(tmpString[0]);
+			currentMonth = Integer.parseInt(tmpString[1]);
+			currentDay = Integer.parseInt(tmpString[2]);
+		}else{
+			this.currentYear = year;
+			this.currentMonth = month;
+			this.currentDay = day;
+		}
+		selectYear = currentYear + "";
+		selectMonth = currentMonth + "";
+		selectDay = currentDay + "";
+	}
+
+	/**
+	 * 计算每月多少天
+	 *
+	 * @param month
+	 */
+	public int calDays(int year, int month) {
+		boolean leayyear = false;
+		if (year % 4 == 0 && year % 100 != 0) {
+			leayyear = true;
+		} else {
+			leayyear = false;
+		}
+		for (int i = 1; i <= 12; i++) {
+			switch (month) {
+				case 1:
+				case 3:
+				case 5:
+				case 7:
+				case 8:
+				case 10:
+				case 12:
+					return 31;
+				case 2:
+					if (leayyear) {
+						return 29;
+					} else {
+						return 28;
+					}
+				case 4:
+				case 6:
+				case 9:
+				case 11:
+					return 30;
+			}
+		}
+		return 30;
+	}
 }
