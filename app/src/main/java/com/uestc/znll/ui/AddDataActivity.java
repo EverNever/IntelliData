@@ -14,7 +14,9 @@ import android.widget.Toast;
 import com.uestc.znll.R;
 import com.uestc.znll.SQLConnection.DataPakBean;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Administrator on 2015/11/8.
@@ -52,7 +54,53 @@ public class AddDataActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         if(modifyOrAdd)
         {
+            int dataCategorySelection = judgeDataCategory();
             packageName.setText(bean.getDataPakName());
+            dataCategory.setSelection(dataCategorySelection);
+            switch (dataCategorySelection) {
+                case 1:
+                {
+                    Date startDate = new Date(Long.parseLong(bean.getDataPakStart()) * 1000);
+                    Date endDate = new Date(Long.parseLong(bean.getDataPakEnd()) * 1000);
+                    String startStr = new SimpleDateFormat("HH:mm").format(startDate);
+                    String endStr = new SimpleDateFormat("HH:mm").format(endDate);
+
+                    beginTime.setText(startStr);
+                    endTime.setText(endStr);
+                    break;
+                }
+                case 2:
+                {
+                    Date startDate = new Date(Long.parseLong(bean.getDataPakStart()) * 1000);
+                    Date endDate = new Date(Long.parseLong(bean.getDataPakEnd()) * 1000);
+                    String startStr = new SimpleDateFormat("yyyy-MM-dd").format(startDate);
+                    String endStr = new SimpleDateFormat("yyyy-MM-dd").format(endDate);
+
+                    beginTime.setText(startStr);
+                    endTime.setText(endStr);
+                    break;
+                }
+            }
+            double sum, used;
+            if ((bean.getDataPakSum() / 1024 / 1024) == 0) {
+                sum = bean.getDataPakSum() / 1024.0f;
+                totalDataMorG.setSelection(0);
+            }
+            else {
+                sum = bean.getDataPakSum() / 1024.0f / 1024.0f;
+                totalDataMorG.setSelection(1);
+
+            }
+            if ((bean.getDataPakUsed() / 1024 / 1024) == 0) {
+                used = bean.getDataPakUsed() / 1024.0f;
+                usedDataMorG.setSelection(0);
+            }
+            else {
+                used = bean.getDataPakUsed() / 1024.0f / 1024.0f;
+                usedDataMorG.setSelection(0);
+            }
+            totalData.setText("" +sum);
+            usedData.setText("" + used);
 //            dataCategory.
             //上面一行需要设置流量套餐的种类，dataCategory 是一个spinner
 //            beginTime.setText()
@@ -63,6 +111,27 @@ public class AddDataActivity extends BaseActivity {
             //totalDataMorG usedDataMorG 都是spinner
         }
     }
+
+    private int judgeDataCategory() {
+        if (!bean.getIsDataPakDaily() && !bean.getIsDataPakMonthly()) {
+            return 2;
+        }
+        else if (bean.getIsDataPakDaily() && !bean.getIsDataPakMonthly()) {
+            return 3;
+        }
+        else if (bean.getIsDataPakDaily() && bean.getIsDataPakMonthly()) {
+            if ((Long.parseLong(bean.getDataPakStart()) - Long.parseLong(bean.getDataPakEnd())) == 86400) {
+                return 0;
+            }
+            else {
+                return 1;
+            }
+        }
+        else {
+            return 5;
+        }
+    }
+
 
     @Override
     protected void initLayout() {
@@ -154,8 +223,7 @@ public class AddDataActivity extends BaseActivity {
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checkData())
-                {
+                if (checkData()) {
                     //往数据库中添加数据
                 }
             }
